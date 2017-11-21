@@ -1,4 +1,4 @@
-const Event = require('../models/event');
+const Event = require('../models/registry');
 
 module.exports = {
   showEvents: showEvents,
@@ -105,8 +105,8 @@ function processCreate(req, res) {
   // save event
   event.save((err) => {
     if (err){
-      req.flash('errors', 'Error creando el parte.');
-      return res.redirect(`/events/${req.params.slug}/edit`);
+      req.flash('errors', JSON.stringify(err) + 'Error creando el parte.');
+      return res.redirect(`/events/create`);
     }
 
     // set a successful flash message
