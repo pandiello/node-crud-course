@@ -15,7 +15,7 @@ module.exports = {
  * Show all events
  */
 function showEvents(req, res) {
-  // get all events   
+  // get all events
   Event.find({}, (err, events) => {
     if (err) {
       res.status(404);
@@ -23,7 +23,7 @@ function showEvents(req, res) {
     }
 
     // return a view with data
-    res.render('pages/events', { 
+    res.render('pages/events', {
       events: events,
       success: req.flash('success')
     });
@@ -41,7 +41,7 @@ function showSingle(req, res) {
       res.send('Event not found!');
     }
 
-    res.render('pages/single', { 
+    res.render('pages/single', {
       event: event,
       success: req.flash('success')
     });
@@ -104,8 +104,10 @@ function processCreate(req, res) {
 
   // save event
   event.save((err) => {
-    if (err)
-      throw err;
+    if (err){
+      req.flash('errors', 'Error creando el parte.');
+      return res.redirect(`/events/${req.params.slug}/edit`);
+    }
 
     // set a successful flash message
     req.flash('success', 'Successfuly created event!');
@@ -149,8 +151,10 @@ function processEdit(req, res) {
     event.description = req.body.description;
 
     event.save((err) => {
-      if (err)
-        throw err;
+      if (err){
+        req.flash('errors', 'Error updating value. The name must be unique.');
+        return res.redirect(`/events/${req.params.slug}/edit`);
+      }
 
       // success flash message
       // redirect back to the /events
