@@ -1,25 +1,18 @@
 const mongoose = require('mongoose'),
+  utils = require("../utils/utils.js");
   Schema = mongoose.Schema;
 
-  const placeShema = new Schema({
-    _id: Schema.Types.ObjectId,
-    name: String,
-    slug: {
-      type: String,
-      unique: true
+  const placeSchema = new Schema({
+    _id: {
+      type: Schema.Types.ObjectId,
+      auto: true
     },
+    name: String,
     description: String
   });
 
-  // middleware -----
-  // make sure that the slug is created from the name
-  placeShema.pre('save', function(next) {
-    this.slug = utis.slugify(this.name);
-    next();
-  });
-
   // create the model
-  const placeModel = mongoose.model('Place', placeShema);
+  const placeModel = mongoose.model('Place', placeSchema);
 
   // export the model
   module.exports = placeModel;

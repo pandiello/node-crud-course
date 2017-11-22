@@ -2,7 +2,8 @@
 const express      = require('express'),
   router           = express.Router(),
   mainController   = require('./controllers/main.controller'),
-  eventsController = require('./controllers/events.controller');
+  eventsController = require('./controllers/events.controller'),
+  placesController = require('./controllers/place.controller');
 
 // export router
 module.exports = router;
@@ -30,3 +31,7 @@ router.get('/events/:slug/delete', eventsController.deleteEvent);
 
 // show a single event
 router.get('/events/:slug', eventsController.showSingle);
+
+router.get('/places/create', placesController.showCreate);
+router.post('/places/create', placesController.processCreate);
+router.get('/places/:id', placesController.showSingle);
