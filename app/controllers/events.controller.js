@@ -27,7 +27,7 @@ function showEvents(req, res) {
       events: events,
       success: req.flash('success')
     });
-  });
+  }).populate('place');
 }
 
 /**
@@ -99,7 +99,8 @@ function processCreate(req, res) {
   // create a new event
   const event = new Event({
     name: req.body.name,
-    description: req.body.description
+    description: req.body.description,
+    place: req.body.placeId
   });
 
   // save event

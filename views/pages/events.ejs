@@ -11,15 +11,21 @@
         <tr>
             <th>Event Name</th>
             <th>Description</th>
+            <th>Place Name</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        
+
         <% for (var event of events) { %>
             <tr>
                 <td><%= event.name %></td>
                 <td><%= event.description %></td>
+                <% if(event.place){ %>
+                  <td><%= event.place.name %></td>
+                <% }else{ %>
+                  <td>place not defined</td>
+                 <% } %>
                 <td>
                     <a href="/events/<%= event.slug %>" class="btn btn-sm btn-primary">View</a>
                     <a href="/events/<%= event.slug %>/edit" class="btn btn-sm btn-primary">Edit</a>
