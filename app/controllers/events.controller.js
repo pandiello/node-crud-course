@@ -1,4 +1,5 @@
 const Event = require('../models/registry');
+const Place = require('../models/place');
 
 module.exports = {
   showEvents: showEvents,
@@ -76,8 +77,15 @@ function seedEvents(req, res) {
  * Show the create form
  */
 function showCreate(req, res) {
-  res.render('pages/create', {
-    errors: req.flash('errors')
+  Place.find({}, (error, places) => {
+    if(error){
+      res.status(404);
+      res.send('Events not found!');
+    };
+      res.render('pages/create', {
+      places: places,
+      errors: req.flash('errors')
+    });
   });
 }
 
