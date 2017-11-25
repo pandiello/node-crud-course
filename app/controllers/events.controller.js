@@ -95,7 +95,7 @@ function showCreate(req, res) {
 function processCreate(req, res) {
   // validate information
   req.checkBody('name', 'Name is required.').notEmpty();
-  req.checkBody('description', 'Description is required.').notEmpty();ñ
+  req.checkBody('description', 'Description is required.').notEmpty();
 
   // if there are errors, redirect and save errors to flash
   const errors = req.validationErrors();
