@@ -5,11 +5,11 @@ const mongoose = require('mongoose'),
 
 // create a schema
 const registrySchema = new Schema({
-  name: String,
-  slug: {
-    type: String,
-    unique: true
+  _id: {
+    type: Schema.Types.ObjectId,
+    auto: true
   },
+  name: String,
   place: { type: Schema.Types.ObjectId, ref: 'Place' },
   description: String
 });
