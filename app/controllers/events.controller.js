@@ -96,6 +96,7 @@ function processCreate(req, res) {
   // validate information
   req.checkBody('name', 'Name is required.').notEmpty();
   req.checkBody('description', 'Description is required.').notEmpty();
+  req.checkBody('placeId', 'Place is required.').notEmpty();
 
   // if there are errors, redirect and save errors to flash
   const errors = req.validationErrors();
@@ -104,25 +105,33 @@ function processCreate(req, res) {
     return res.redirect('/events/create');
   }
 
-  // create a new event
-  const event = new Event({
-    name: req.body.name,
-    description: req.body.description,
-    place: req.body.placeId
-  });
-
-  // save event
-  event.save((err) => {
-    if (err){
-      req.flash('errors', JSON.stringify(err) + 'Error creando el parte.');
-      return res.redirect(`/events/create`);
+  // Check if the place id really exists on the database
+  Place.findOne({ _id: req.body.placeId }, (err, place) => {
+    if(err || !place){
+      req.flash('errors', 'El lugar especificado es invalido.');
+      return res.redirect('/events/create');
     }
 
-    // set a successful flash message
-    req.flash('success', 'Successfuly created event!');
+    // create a new event
+    const event = new Event({
+      name: req.body.name,
+      description: req.body.description,
+      place: req.body.placeId
+    });
 
-    // redirect to the newly created event
-    res.redirect(`/events/${event.slug}`);
+    // save event
+    event.save((err) => {
+      if (err){
+        req.flash('errors', JSON.stringify(err) + 'Error creando el parte.');
+        return res.redirect(`/events/create`);
+      }
+
+      // set a successful flash message
+      req.flash('success', 'Successfuly created event!');
+
+      // redirect to the newly created event
+      res.redirect(`/events/${event.slug}`);
+    });
   });
 }
 
