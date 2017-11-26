@@ -22,10 +22,12 @@
 
             <div class="form-group">
               <label> Place </label>
-              <select name="placeId" class="form-control">
+              <input list="places" name="placeId" class="form-control">
+              <datalist id="places">
                 <% for (place of places){ %>
-                    <option value= <%= place.id %>> <%= place.name %> </option>
+                    <option value= <%= place.name %>></option>
                 <% } %>
+              </datalist>
               </select>
             </div>
 
