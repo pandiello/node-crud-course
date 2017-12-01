@@ -1,10 +1,10 @@
 const Event = require('../models/registry');
 const Place = require('../models/place');
+const dateFormat = require('dateformat');
 
 module.exports = {
   showEvents: showEvents,
   showSingle: showSingle,
-  seedEvents: seedEvents,
   showCreate: showCreate,
   processCreate: processCreate,
   showEdit: showEdit,
@@ -51,30 +51,6 @@ function showSingle(req, res) {
       success: req.flash('success')
     });
   }).populate('place');
-}
-
-/**
- * Seed the database
- */
-function seedEvents(req, res) {
-  // create some events
-  const events = [
-    { name: 'Basketball', description: 'Throwing into a basket.' },
-    { name: 'Swimming', description: 'Michael Phelps is the fast fish.' },
-    { name: 'Weightlifting', description: 'Lifting heavy things up' },
-    { name: 'Ping Pong', description: 'Super fast paddles' }
-  ];
-
-  // use the Event model to insert/save
-  Event.remove({}, () => {
-    for (event of events) {
-      var newEvent = new Event(event);
-      newEvent.save();
-    }
-  });
-
-  // seeded!
-  res.send('Database seeded!');
 }
 
 /**
@@ -150,6 +126,7 @@ function showEdit(req, res) {
       res.render('pages/Event/edit', {
         event: event,
         places: places,
+        dateFormat: dateFormat,
         errors: req.flash('errors')
       });
     });

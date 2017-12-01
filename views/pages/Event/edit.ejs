@@ -27,7 +27,7 @@
 
             <div class="form-group">
               <label>Date</label>
-              <input type="date" name="date" class="form-control" value="<%= event.date.getFullYear() + "-" + event.date.getMonth() + "-" + event.date.getDate() %>">
+              <input type="date" name="date" class="form-control" value="<%= dateFormat(event.date, 'yyyy-mm-dd') %>">
             </div>
 
             <div class="form-group">
