@@ -35,8 +35,6 @@ function showEvents(req, res) {
  * Show a single event
  */
 function showSingle(req, res) {
-  // get a single event
-  console.log(req.params.id);
   Event.findOne({ _id: req.params.id }, (err, event) => {
     if (err) {
       res.status(404);
@@ -52,7 +50,7 @@ function showSingle(req, res) {
       event: event,
       success: req.flash('success')
     });
-  });
+  }).populate('place');
 }
 
 /**
@@ -103,6 +101,7 @@ function processCreate(req, res) {
   req.checkBody('name', 'Name is required.').notEmpty();
   req.checkBody('description', 'Description is required.').notEmpty();
   req.checkBody('placeName', 'Place is required.').notEmpty();
+  req.checkBody('date', 'Date is required.').notEmpty();
 
   // if there are errors, redirect and save errors to flash
   const errors = req.validationErrors();
@@ -122,6 +121,7 @@ function processCreate(req, res) {
     const event = new Event({
       name: req.body.name,
       description: req.body.description,
+      date: req.body.date,
       place: place.id
     });
 
@@ -145,12 +145,15 @@ function processCreate(req, res) {
  * Show the edit form
  */
 function showEdit(req, res) {
-  Event.findOne({ slug: req.params.slug }, (err, event) => {
-    res.render('pages/Event/edit', {
-      event: event,
-      errors: req.flash('errors')
+  Event.findOne({ _id: req.params.id }, (err, event) => {
+    Place.find({}, (error, places) => {
+      res.render('pages/Event/edit', {
+        event: event,
+        places: places,
+        errors: req.flash('errors')
+      });
     });
-  });
+  }).populate('place');
 }
 
 /**
@@ -160,6 +163,8 @@ function processEdit(req, res) {
   // validate information
   req.checkBody('name', 'Name is required.').notEmpty();
   req.checkBody('description', 'Description is required.').notEmpty();
+  req.checkBody('placeName', 'Place is required.').notEmpty();
+  req.checkBody('date', 'Date is required.').notEmpty();
 
   // if there are errors, redirect and save errors to flash
   const errors = req.validationErrors();
@@ -169,21 +174,32 @@ function processEdit(req, res) {
   }
 
   // finding a current event
-  Event.findOne({ id: req.params.id }, (err, event) => {
-    // updating that event
-    event.name        = req.body.name;
-    event.description = req.body.description;
+  Event.findOne({ _id: req.params.id }, (err, event) => {
 
-    event.save((err) => {
-      if (err){
-        req.flash('errors', 'Error updating value. The name must be unique.');
-        return res.redirect(`/events/${req.params.id}/edit`);
+    // Check if the place id really exists on the database
+    Place.findOne({ name: req.body.placeName }, (err, place) => {
+      if(err || !place){
+        req.flash('errors', 'El lugar especificado es invalido.');
+        return res.redirect('/events/create');
       }
 
-      // success flash message
-      // redirect back to the /events
-      req.flash('success', 'Successfully updated event.');
-      res.redirect('/events');
+        // updating that event
+        event.name        = req.body.name;
+        event.description = req.body.description;
+        event.date        = req.body.date;
+        event.place       = place.id
+
+        event.save((err) => {
+          if (err){
+            req.flash('errors', 'Error updating value. The name must be unique.');
+            return res.redirect(`/events/${req.param.id}/edit`);
+          }
+
+          // success flash message
+          // redirect back to the /events
+          req.flash('success', 'Successfully updated event.');
+          res.redirect('/events');
+        });
     });
   });
 
