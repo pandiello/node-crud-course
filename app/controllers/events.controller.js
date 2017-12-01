@@ -24,7 +24,7 @@ function showEvents(req, res) {
     }
 
     // return a view with data
-    res.render('pages/events', {
+    res.render('pages/Event/events', {
       events: events,
       success: req.flash('success')
     });
@@ -36,13 +36,19 @@ function showEvents(req, res) {
  */
 function showSingle(req, res) {
   // get a single event
-  Event.findOne({ slug: req.params.slug }, (err, event) => {
+  console.log(req.params.id);
+  Event.findOne({ _id: req.params.id }, (err, event) => {
     if (err) {
       res.status(404);
       res.send('Event not found!');
     }
 
-    res.render('pages/single', {
+    if (!event){
+        req.flash('error', 'Event not found.');
+        return res.redirect('/events');
+    }
+
+    res.render('pages/Event/single', {
       event: event,
       success: req.flash('success')
     });
@@ -82,7 +88,7 @@ function showCreate(req, res) {
       res.status(404);
       res.send('Events not found!');
     };
-      res.render('pages/create', {
+      res.render('pages/Event/create', {
       places: places,
       errors: req.flash('errors')
     });
@@ -96,7 +102,7 @@ function processCreate(req, res) {
   // validate information
   req.checkBody('name', 'Name is required.').notEmpty();
   req.checkBody('description', 'Description is required.').notEmpty();
-  req.checkBody('placeId', 'Place is required.').notEmpty();
+  req.checkBody('placeName', 'Place is required.').notEmpty();
 
   // if there are errors, redirect and save errors to flash
   const errors = req.validationErrors();
@@ -106,7 +112,7 @@ function processCreate(req, res) {
   }
 
   // Check if the place id really exists on the database
-  Place.findOne({ _id: req.body.placeId }, (err, place) => {
+  Place.findOne({ name: req.body.placeName }, (err, place) => {
     if(err || !place){
       req.flash('errors', 'El lugar especificado es invalido.');
       return res.redirect('/events/create');
@@ -116,7 +122,7 @@ function processCreate(req, res) {
     const event = new Event({
       name: req.body.name,
       description: req.body.description,
-      place: req.body.placeId
+      place: place.id
     });
 
     // save event
@@ -130,7 +136,7 @@ function processCreate(req, res) {
       req.flash('success', 'Successfuly created event!');
 
       // redirect to the newly created event
-      res.redirect(`/events/${event.slug}`);
+      res.redirect(`/events/${event.id}`);
     });
   });
 }
@@ -140,7 +146,7 @@ function processCreate(req, res) {
  */
 function showEdit(req, res) {
   Event.findOne({ slug: req.params.slug }, (err, event) => {
-    res.render('pages/edit', {
+    res.render('pages/Event/edit', {
       event: event,
       errors: req.flash('errors')
     });
@@ -159,11 +165,11 @@ function processEdit(req, res) {
   const errors = req.validationErrors();
   if (errors) {
     req.flash('errors', errors.map(err => err.msg));
-    return res.redirect(`/events/${req.params.slug}/edit`);
+    return res.redirect(`/events/${req.params.id}/edit`);
   }
 
   // finding a current event
-  Event.findOne({ slug: req.params.slug }, (err, event) => {
+  Event.findOne({ id: req.params.id }, (err, event) => {
     // updating that event
     event.name        = req.body.name;
     event.description = req.body.description;
@@ -171,7 +177,7 @@ function processEdit(req, res) {
     event.save((err) => {
       if (err){
         req.flash('errors', 'Error updating value. The name must be unique.');
-        return res.redirect(`/events/${req.params.slug}/edit`);
+        return res.redirect(`/events/${req.params.id}/edit`);
       }
 
       // success flash message
@@ -187,7 +193,7 @@ function processEdit(req, res) {
  * Delete an event
  */
 function deleteEvent(req, res) {
-  Event.remove({ slug: req.params.slug }, (err) => {
+  Event.remove({ id: req.params.id }, (err) => {
     // set flash data
     // redirect back to the events page
     req.flash('success', 'Event deleted!');

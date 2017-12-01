@@ -7,7 +7,10 @@ const mongoose = require('mongoose'),
       type: Schema.Types.ObjectId,
       auto: true
     },
-    name: String,
+    name: {
+      type: String,
+       unique: true
+     },
     description: String
   });
 

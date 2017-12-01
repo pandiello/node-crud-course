@@ -1,12 +1,38 @@
 const Place = require('../models/place');
+const Registry = require('../models/registry');
 
 module.exports = {
+  showPlaces: showPlaces,
   showSingle: showSingle,
   showCreate: showCreate,
   processCreate: processCreate,
 }
+
 /**
- * Show a single event
+* Show all place
+*/
+function showPlaces(req, res){
+  Place.find({}, (err, places) => {
+    if (err) {
+      res.status(404);
+      res.send('Event not found!');
+    }
+
+    places.forEach(place => {
+      Registry.Find({ place: place.id }, (err, registries) => {
+        place.Registry = registries;
+      });
+    });
+
+    res.render('pages/Place/places', {
+      places: places,
+      sucess: req.flash('sucess')
+    });
+  });
+}
+
+/**
+ * Show a single place
  */
 function showSingle(req, res) {
   // get a single event
@@ -16,7 +42,7 @@ function showSingle(req, res) {
       res.send('Event not found!');
     }
 
-    res.render('pages/singlePlace', {
+    res.render('pages/Place/singlePlace', {
       place: place,
       success: req.flash('success')
     });
@@ -27,7 +53,7 @@ function showSingle(req, res) {
  * Show the create form
  */
 function showCreate(req, res) {
-  res.render('pages/createPlace', {
+  res.render('pages/Place/createPlace', {
     errors: req.flash('errors')
   });
 };

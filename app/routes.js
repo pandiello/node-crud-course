@@ -23,14 +23,16 @@ router.get('/events/create',  eventsController.showCreate);
 router.post('/events/create', eventsController.processCreate);
 
 // edit events
-router.get('/events/:slug/edit', eventsController.showEdit);
-router.post('/events/:slug',     eventsController.processEdit);
+router.get('/events/:id/edit', eventsController.showEdit);
+router.post('/events/:id',     eventsController.processEdit);
 
 // delete events
-router.get('/events/:slug/delete', eventsController.deleteEvent);
+router.get('/events/:id/delete', eventsController.deleteEvent);
 
 // show a single event
-router.get('/events/:slug', eventsController.showSingle);
+router.get('/events/:id', eventsController.showSingle);
+
+router.get('/places',   placesController.showPlaces)
 
 router.get('/places/create', placesController.showCreate);
 router.post('/places/create', placesController.processCreate);
