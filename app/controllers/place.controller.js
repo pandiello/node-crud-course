@@ -19,14 +19,18 @@ function showPlaces(req, res){
     }
 
     places.forEach(place => {
-      Registry.Find({ place: place.id }, (err, registries) => {
-        place.Registry = registries;
+      Registry.find({ place: place.id }, (err, registries) => {
+        if(err){
+          req.flash('error', err);
+        }
+
+        place.regiestries = registries;
       });
     });
 
     res.render('pages/Place/places', {
       places: places,
-      sucess: req.flash('sucess')
+      success: req.flash('success')
     });
   });
 }
@@ -42,9 +46,15 @@ function showSingle(req, res) {
       res.send('Event not found!');
     }
 
-    res.render('pages/Place/singlePlace', {
-      place: place,
-      success: req.flash('success')
+    Registry.find({ place: place.id }, (err, registries) => {
+        if(err){
+          req.flash('error', err);
+        };
+        place.registries = registries;
+        res.render('pages/Place/singlePlace', {
+          place: place,
+          success: req.flash('success')
+      });
     });
   });
 };

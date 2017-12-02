@@ -21,9 +21,9 @@
                 <td><%= place.name %></td>
                 <td><%= place.description %></td>
                 <td>
-                    <a href="/places/<%= place.slug %>" class="btn btn-sm btn-primary">View</a>
-                    <a href="/places/<%= place.slug %>/edit" class="btn btn-sm btn-primary">Edit</a>
-                    <a href="/places/<%= place.slug %>/delete" class="btn btn-sm btn-danger">Delete</a>
+                    <a href="/places/<%= place.id %>" class="btn btn-sm btn-primary">View</a>
+                    <a href="/places/<%= place.id %>/edit" class="btn btn-sm btn-primary">Edit</a>
+                    <a href="/places/<%= place.id %>/delete" class="btn btn-sm btn-danger">Delete</a>
                 </td>
             </tr>
         <% } %>
