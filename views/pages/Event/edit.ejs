@@ -1,5 +1,5 @@
 <div class="jumbotron text-center">
-    <h1>Editing <%= event.name %></h1>
+    <h1>Editar <%= event.name %></h1>
 </div>
 
 <div class="row">
@@ -16,22 +16,22 @@
         <form action="/events/<%= event._id %>" method="POST">
 
             <div class="form-group">
-                <label>Name</label>
+                <label>Nombre</label>
                 <input type="text" name="name" class="form-control" value="<%= event.name %>">
             </div>
 
             <div class="form-group">
-                <label>Description</label>
+                <label>Descripción</label>
                 <textarea name="description" rows="5" class="form-control"><%= event.description %></textarea>
             </div>
 
             <div class="form-group">
-              <label>Date</label>
+              <label>Fecha</label>
               <input type="date" name="date" class="form-control" value="<%= dateFormat(event.date, 'yyyy-mm-dd') %>">
             </div>
 
             <div class="form-group">
-              <label> Place </label>
+              <label> Cruce </label>
               <input list="places" name="placeName" class="form-control" value= <% if (event.place){ %> "<%= event.place.name %>" <% } %> >
               <datalist id="places">
                 <% for (place of places){ %>
@@ -42,7 +42,7 @@
             </div>
 
             <div class="form-group">
-                <button type="submit" class="btn btn-success btn-lg">Update</button>
+                <button type="submit" class="btn btn-success btn-lg">Editar</button>
             </div>
 
         </form>

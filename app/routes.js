@@ -34,3 +34,5 @@ router.get('/places',   placesController.showPlaces)
 router.get('/places/create', placesController.showCreate);
 router.post('/places/create', placesController.processCreate);
 router.get('/places/:id', placesController.showSingle);
+router.get('/places/:id/edit', placesController.showEdit);
+router.post('/places/:id',     placesController.processEdit);

@@ -26,6 +26,7 @@ function showEvents(req, res) {
     // return a view with data
     res.render('pages/Event/events', {
       events: events,
+      dateformat: dateFormat,
       success: req.flash('success')
     });
   }).populate('place');
@@ -109,7 +110,7 @@ function processCreate(req, res) {
       }
 
       // set a successful flash message
-      req.flash('success', 'Successfuly created event!');
+      req.flash('success', 'Parte creado correctamente');
 
       // redirect to the newly created event
       res.redirect(`/events/${event.id}`);
@@ -174,7 +175,7 @@ function processEdit(req, res) {
 
           // success flash message
           // redirect back to the /events
-          req.flash('success', 'Successfully updated event.');
+          req.flash('success', 'Parte actualizado correctamente');
           res.redirect('/events');
         });
     });

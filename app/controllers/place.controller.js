@@ -1,11 +1,14 @@
 const Place = require('../models/place');
 const Registry = require('../models/registry');
+const dateformat = require('dateformat');
 
 module.exports = {
   showPlaces: showPlaces,
   showSingle: showSingle,
   showCreate: showCreate,
   processCreate: processCreate,
+  showEdit: showEdit,
+  processEdit: processEdit,
 }
 
 /**
@@ -53,6 +56,7 @@ function showSingle(req, res) {
         place.registries = registries;
         res.render('pages/Place/singlePlace', {
           place: place,
+          dateformat: dateformat,
           success: req.flash('success')
       });
     });
@@ -94,9 +98,50 @@ function processCreate(req, res) {
     }
 
     // set a successful flash message
-    req.flash('success', 'Successfuly created event!');
+    req.flash('success', 'Cruce creado correctamente!');
 
     // redirect to the newly created event
     res.redirect(`/places/${place.id}`);
+  });
+};
+
+/**
+ * Show the edit form
+ */
+function showEdit(req, res) {
+  Place.findOne({ _id: req.params.id }, (err, place) => {
+      res.render('pages/Place/editPlace', {
+        place: place,
+        errors: req.flash('errors')
+      });
+  });
+};
+
+function processEdit(req, res){
+    // validate information
+    req.checkBody('name', 'Name is required.').notEmpty();
+    req.checkBody('description', 'Description is required.').notEmpty();
+
+    Place.findOne({ _id: req.params.id }, (err, place) => {
+      if(err){
+        req.flash('error', 'Error, place not found');
+        res.redirect(`places/${req.params.id}/edit`);
+      }
+
+      place.name = req.body.name;
+      place.description = req.body.description;
+
+      place.save((err) => {
+        if (err){
+          req.flash('errors', 'Error updating value.');
+          return res.redirect(`/places/${req.param.id}/edit`);
+        }
+
+        // success flash message
+        // redirect back to the /events
+        req.flash('success', 'Cruce actualizado correctamente.');
+        res.redirect('/places');
+
+    });
   });
 };

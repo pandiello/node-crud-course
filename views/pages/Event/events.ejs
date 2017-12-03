@@ -1,5 +1,5 @@
 <div class="jumbotron text-center">
-    <h1>All Events</h1>
+    <h1>Partes</h1>
 </div>
 
 <% if (success.length > 0) { %>
@@ -9,9 +9,10 @@
 <table class="table table-bordered table-hover table-striped">
     <thead>
         <tr>
-            <th>Event Name</th>
-            <th>Description</th>
-            <th>Place Name</th>
+            <th>Nombre</th>
+            <th>Descripciónn</th>
+            <th>Fecha</th>
+            <th>Cruce</th>
             <th></th>
         </tr>
     </thead>
@@ -21,15 +22,15 @@
             <tr>
                 <td><%= event.name %></td>
                 <td><%= event.description %></td>
+                <td><%= dateformat(event.date, "yyyy-mm-dd") %></td>
                 <% if(event.place){ %>
                   <td><%= event.place.name %></td>
                 <% }else{ %>
-                  <td>place not defined</td>
+                  <td>Cruce no definido</td>
                  <% } %>
                 <td>
-                    <a href="/events/<%= event.id %>" class="btn btn-sm btn-primary">View</a>
-                    <a href="/events/<%= event.id %>/edit" class="btn btn-sm btn-primary">Edit</a>
-                    <a href="/events/<%= event.id %>/delete" class="btn btn-sm btn-danger">Delete</a>
+                    <a href="/events/<%= event.id %>" class="btn btn-sm btn-primary">Ver</a>
+                    <a href="/events/<%= event.id %>/edit" class="btn btn-sm btn-primary">Editar</a>
                 </td>
             </tr>
         <% } %>
